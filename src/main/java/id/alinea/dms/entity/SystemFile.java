@@ -15,7 +15,7 @@ public class SystemFile extends BaseEntity{
     private String fileType;
     
     @Column(name="entity_id")
-    private Long entityId;
+    private String entityId;
     
     @Column(name="entity_type")
     private String entityType;
@@ -41,11 +41,11 @@ public class SystemFile extends BaseEntity{
     public String getFileType() {
         return this.fileType;
     }
-    public void setEntityId(Long entityId) {
+    public void setEntityId(String entityId) {
         this.entityId = entityId;
     }
 
-    public Long getEntityId() {
+    public String getEntityId() {
         return this.entityId;
     }
     public void setEntityType(String entityType) {

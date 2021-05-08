@@ -7,7 +7,7 @@ public interface ISystemFileService {
     
     IRepositoryLocator getRepositoryLocator();
 
-    void storeFile(MultipartFile file, Long entityId, String entityName, String entityField); 
+    void storeFile(MultipartFile file, String entityId, String entityName, String entityField); 
 
     void deleteFileByUuid(String uuid);
 

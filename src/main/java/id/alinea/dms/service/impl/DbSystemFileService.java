@@ -26,7 +26,7 @@ public class DbSystemFileService extends BaseService implements ISystemFileServi
     }
 
     @Override
-    public void storeFile(MultipartFile file, Long entityId, String entityName, String entityField) {
+    public void storeFile(MultipartFile file, String entityId, String entityName, String entityField) {
         if(file != null){
             final String uuid = UUID. randomUUID().toString();
 

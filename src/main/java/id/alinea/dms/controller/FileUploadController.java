@@ -119,7 +119,7 @@ public class FileUploadController {
 	@CrossOrigin
 	@PostMapping("/")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
-			@RequestParam(value = "id", required = false) Long entityId,
+			@RequestParam(value = "id", required = false) String entityId,
 			@RequestParam(value = "name", required = false) String entityName,
 			@RequestParam(value = "field", required = false) String entityField,
 			RedirectAttributes redirectAttributes) {
@@ -138,7 +138,7 @@ public class FileUploadController {
 	@CrossOrigin
 	@PostMapping("/upload")
 	public @ResponseBody String handleFileUploadAPI(@RequestParam("file") MultipartFile file,
-			@RequestParam(value = "id", required = false) Long entityId,
+			@RequestParam(value = "id", required = false) String entityId,
 			@RequestParam(value = "name", required = false) String entityName,
 			@RequestParam(value = "field", required = false) String entityField) {
 
