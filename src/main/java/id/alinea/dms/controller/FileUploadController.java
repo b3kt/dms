@@ -1,11 +1,24 @@
 package id.alinea.dms.controller;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
+import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
+import com.google.common.net.MediaType;
+
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +73,9 @@ public class FileUploadController {
 		model.addAttribute("files",
 				files.stream()
 						.map(file -> MvcUriComponentsBuilder
-								.fromMethodName(FileUploadController.class, "serveFile", file.getFileUuid().concat(".").concat(MimeTypes.getDefaultExt(file.getFileType())))
+								.fromMethodName(FileUploadController.class, "serveFile",
+										file.getFileUuid().concat(".")
+												.concat(MimeTypes.getDefaultExt(file.getFileType())))
 								.build().toUri().toString())
 						.collect(Collectors.toList()));
 
@@ -68,7 +83,7 @@ public class FileUploadController {
 	}
 
 	@DeleteMapping("/{uuid}")
-	public @ResponseBody String deleteFile(@PathVariable(value="uuid") String uuid) throws IOException {
+	public @ResponseBody String deleteFile(@PathVariable(value = "uuid") String uuid) throws IOException {
 		systemFileService.deleteFileByUuid(uuid);
 		return "OK";
 	}
@@ -83,11 +98,28 @@ public class FileUploadController {
 				.body(file);
 	}
 
+	@GetMapping("/view/{filename:.+}")
+	@ResponseBody
+	public ResponseEntity<Resource> viewFile(@PathVariable String filename) {
+		if (StringUtils.isNotBlank(filename)) {
+			final String uuid = FilenameUtils.removeExtension(filename);
+			SystemFile sysFile = systemFileService.findSystemFileByUuid(uuid);
+			if (sysFile != null) {
+				Resource file = storageService.loadAsResource(filename);
+				return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_TYPE, sysFile.getFileType())
+					.body(file);				
+			}
+		}
+		return ResponseEntity.notFound().build();
+	}
+
 	@PostMapping("/")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 			@RequestParam(value = "id", required = false) Long entityId,
 			@RequestParam(value = "name", required = false) String entityName,
-			@RequestParam(value = "field", required = false) String entityField, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "field", required = false) String entityField,
+			RedirectAttributes redirectAttributes) {
 
 		if (entityId != null && StringUtils.isNotBlank(entityName) && StringUtils.isNotBlank(entityField)) {
 			systemFileService.storeFile(file, entityId, entityName, entityField);
@@ -106,7 +138,7 @@ public class FileUploadController {
 			@RequestParam(value = "name", required = false) String entityName,
 			@RequestParam(value = "field", required = false) String entityField) {
 
-		String msg = null; 
+		String msg = null;
 		if (entityId != null && StringUtils.isNotBlank(entityName) && StringUtils.isNotBlank(entityField)) {
 			systemFileService.storeFile(file, entityId, entityName, entityField);
 			msg = "You successfully uploaded " + file.getOriginalFilename() + "!";
@@ -114,7 +146,7 @@ public class FileUploadController {
 			msg = "Unable to upload " + file.getOriginalFilename() + "!";
 		}
 
-		logger.info("uploaded via API : {} ",msg);
+		logger.info("uploaded via API : {} ", msg);
 		return msg;
 	}
 
