@@ -14,6 +14,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
+		<start-class>id.alinea.dms.DmsApplication</start-class>
 	</properties>
 	<dependencies>
 
@@ -35,12 +36,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -56,6 +57,14 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-logging -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<version>2.3.10.RELEASE</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -78,9 +87,27 @@
 		</dependency>
 
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>		
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.experimental</groupId>
+			<artifactId>spring-graalvm-native</artifactId>
+			<version>0.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-indexer</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>2.0.1.Final</version>
+		</dependency>
 
 	</dependencies>
 
@@ -89,8 +116,200 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- <configuration>
+					<image>
+						<builder>paketobuildpacks/builder:tiny</builder>
+						<env>
+							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+							<BP_NATIVE_IMAGE_BUILD_ARGUMENTS> \-\-enable-https</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+						</env>
+					</image>
+				</configuration> -->
 			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+				  <archive>
+					<manifest>
+					  <mainClass>${start-class}</mainClass>
+					</manifest>
+				  </archive>
+				  <descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				  </descriptorRefs>
+				</configuration>
+			  </plugin>
+			<!-- <plugin>
+				<groupId>org.springframework.experimental</groupId>
+				<artifactId>spring-aot-maven-plugin</artifactId>
+				<version>0.9.2</version>
+				<executions>
+					<execution>
+						<id>test-generate</id>
+						<goals>
+							<goal>test-generate</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> -->
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</repository>
+		<repository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- <profiles>
+		<profile>
+			<id>native</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.experimental</groupId>
+						<artifactId>spring-aot-maven-plugin</artifactId>
+						<version>0.9.2</version>
+						<executions>
+							<execution>
+								<id>test-generate</id>
+								<goals>
+									<goal>test-generate</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>generate</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.graalvm.nativeimage</groupId>
+						<artifactId>native-image-maven-plugin</artifactId>
+						<version>20.2.0</version>
+						<configuration>
+							<buildArgs>-J-Xmx4G -H:+TraceClassInitialization -H:+ReportExceptionStackTraces
+								-Dspring.graal.remove-unused-autoconfig=true -Dspring.graal.remove-yaml-support=true
+							</buildArgs>
+							<imageName>${project.artifactId}</imageName>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>native-image</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<classifier>exec</classifier>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile> 
+	</profiles> -->
+	<profiles>
+		<profile>
+			<id>native</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.graalvm.nativeimage</groupId>
+						<artifactId>native-image-maven-plugin</artifactId>
+						<version>20.1.0</version>
+						<configuration>
+							<mainClass>${start-class}</mainClass>
+							<buildArgs>
+						-Dspring.native.remove-yaml-support=true
+						-Dspring.spel.ignore=true
+						-Dspring.graal.mode=initialization-only 
+						-Dspring.graal.dump-config=/tmp/computed-reflect-config.json 
+						-Dspring.graal.verbose=true 
+						-Dspring.graal.skip-logback=true 
+						-Dio.netty.tryReflectionSetAccessible=true
+						-H:+TraceClassInitialization 
+						--no-fallback 
+						--allow-incomplete-classpath 
+						--report-unsupported-elements-at-runtime 
+						-H:+ReportExceptionStackTraces 
+						--no-server 
+						-Ddebug=true						
+						--initialize-at-build-time=org.springframework.core.SpringProperties
+						--initialize-at-build-time=org.reactivestreams.Publisher 
+						--initialize-at-build-time=com.example.reactive.ReservationRepository 
+						--initialize-at-build-time=org.springframework.util.unit.DataSize 
+						--initialize-at-build-time=ch.qos.logback.core.spi.AppenderAttachableImpl
+						--initialize-at-build-time=ch.qos.logback.core.CoreConstants
+						--initialize-at-build-time=org.slf4j.impl.StaticLoggerBinder
+						--initialize-at-build-time=ch.qos.logback.core.util.StatusPrinter
+						--initialize-at-build-time=ch.qos.logback.core.status.InfoStatus
+						--initialize-at-build-time=org.slf4j.MDC
+						--initialize-at-build-time=ch.qos.logback.classic.Logger
+						--initialize-at-build-time=ch.qos.logback.classic.Level
+						--initialize-at-build-time=ch.qos.logback.classic.spi.ThrowableProxy
+						--initialize-at-build-time=org.slf4j.LoggerFactory
+						--initialize-at-run-time=io.netty.util.internal.logging.Log4JLoggerls
+						--initialize-at-run-time=io.netty.channel.unix.Socket 
+						--initialize-at-run-time=io.netty.channel.unix.IovArray 
+						--initialize-at-run-time=io.netty.channel.epoll.EpollEventLoop 
+						--initialize-at-run-time=io.netty.channel.unix.Errors
+						--initialize-at-run-time=io.netty.util.internal.logging.Log4JLogger
+						--initialize-at-run-time=io.netty.handler.ssl.ReferenceCountedOpenSslContext
+						--initialize-at-run-time=io.netty.handler.ssl.JdkNpnApplicationProtocolNegotiator
+						--initialize-at-run-time=io.netty.handler.ssl.ReferenceCountedOpenSslEngine
+						--initialize-at-run-time=io.netty.handler.ssl.ConscryptAlpnSslEngine
+						--initialize-at-run-time=io.netty.handler.ssl.JettyAlpnSslEngine$ServerEngine
+						--initialize-at-run-time=io.netty.handler.ssl.JettyAlpnSslEngine$ClientEngine
+						--initialize-at-run-time=io.netty.handler.ssl.JettyNpnSslEngine
+					</buildArgs>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>native-image</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
