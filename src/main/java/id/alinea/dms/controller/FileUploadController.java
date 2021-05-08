@@ -28,6 +28,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,6 +83,7 @@ public class FileUploadController {
 		return "uploadForm";
 	}
 
+	@CrossOrigin
 	@DeleteMapping("/{uuid}")
 	public @ResponseBody String deleteFile(@PathVariable(value = "uuid") String uuid) throws IOException {
 		systemFileService.deleteFileByUuid(uuid);
@@ -114,6 +116,7 @@ public class FileUploadController {
 		return ResponseEntity.notFound().build();
 	}
 
+	@CrossOrigin
 	@PostMapping("/")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 			@RequestParam(value = "id", required = false) Long entityId,
@@ -132,6 +135,7 @@ public class FileUploadController {
 		return "redirect:/";
 	}
 
+	@CrossOrigin
 	@PostMapping("/upload")
 	public @ResponseBody String handleFileUploadAPI(@RequestParam("file") MultipartFile file,
 			@RequestParam(value = "id", required = false) Long entityId,
