@@ -1,22 +1,10 @@
 package id.alinea.dms.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
-import com.google.common.net.MediaType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
