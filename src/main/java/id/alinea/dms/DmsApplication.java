@@ -1,9 +1,5 @@
 package id.alinea.dms;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.catalina.filters.RemoteAddrFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -15,6 +11,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import id.alinea.dms.service.impl.FileSystemStorageService;
+import io.imagekit.sdk.ImageKit;
+import io.imagekit.sdk.config.Configuration;
+import io.imagekit.sdk.utils.Utils;
 
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
@@ -25,7 +24,18 @@ import id.alinea.dms.service.impl.FileSystemStorageService;
 public class DmsApplication {
 
 	public static void main(String[] args) {
+		initImageKit();
 		SpringApplication.run(DmsApplication.class, args);
+	}
+
+	private static void initImageKit(){
+		try{
+			ImageKit imageKit=ImageKit.getInstance();
+			Configuration config=Utils.getSystemConfig(DmsApplication.class);
+			imageKit.setConfig(config);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 	@Bean
