@@ -4,42 +4,23 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name="system_parameters")
 public class SystemParameter extends BaseEntity{
     
+    @Setter @Getter
     @Column
     private String code;
 
+    @Setter @Getter
     @Column
     private String value;
 
+    @Setter @Getter
     @Column
     private String type;
-
-
-    public String getCode(){
-        return this.code;
-    }
-
-    public void setCode(String code){
-        this.code = code;
-    }
-
-    public String getValue(){
-        return this.value;
-    }
-
-    public void setValue(String value){
-        this.value = value;
-    }
-
-    public String getType(){
-        return this.type;
-    }
-
-    public void setType(String type){
-        this.type = type;
-    }
 
 }

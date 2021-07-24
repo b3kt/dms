@@ -4,6 +4,8 @@ public interface IServiceLocator {
 
     IStorageService getStorageService();
 
-    ISystemFileService getSystemFileService(); 
+    IDbSystemFileService getSystemFileService(); 
+
+    IImageKitService getImageKitService();
     
 }

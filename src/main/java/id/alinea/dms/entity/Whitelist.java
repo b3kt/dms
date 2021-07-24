@@ -27,8 +27,5 @@ public class Whitelist extends BaseEntity {
     public void setType(String type){
         this.type = type;
     }
-
-    
-
     
 }

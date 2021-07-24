@@ -31,10 +31,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import id.alinea.dms.entity.SystemFile;
 import id.alinea.dms.exception.StorageFileNotFoundException;
 import id.alinea.dms.service.IStorageService;
-import id.alinea.dms.service.ISystemFileService;
+import id.alinea.dms.service.IDbSystemFileService;
 import id.alinea.dms.service.impl.DbSystemFileService;
 import id.alinea.dms.service.impl.FileSystemStorageService;
 import id.alinea.dms.utils.MimeTypes;
+import id.alinea.dms.vo.ImageKitConfig;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 
 @Controller
 public class FileUploadController {
@@ -45,7 +48,7 @@ public class FileUploadController {
 	private final IStorageService storageService;
 
 	@Autowired
-	private final ISystemFileService systemFileService;
+	private final IDbSystemFileService systemFileService;
 
 	@Autowired
 	public FileUploadController(FileSystemStorageService storageService, DbSystemFileService systemFileService) {
@@ -112,8 +115,11 @@ public class FileUploadController {
 			@RequestParam(value = "field", required = false) String entityField,
 			RedirectAttributes redirectAttributes) {
 
+		// should be get from keycloak token
+		final String createdBy = "System";		
+
 		if (entityId != null && StringUtils.isNotBlank(entityName) && StringUtils.isNotBlank(entityField)) {
-			systemFileService.storeFile(file, entityId, entityName, entityField);
+			systemFileService.storeFile(file, entityId, entityName, entityField, createdBy);
 			redirectAttributes.addFlashAttribute("message",
 					"You successfully uploaded " + file.getOriginalFilename() + "!");
 		} else {
@@ -130,9 +136,12 @@ public class FileUploadController {
 			@RequestParam(value = "name", required = false) String entityName,
 			@RequestParam(value = "field", required = false) String entityField) {
 
+		// should be get from keycloak token
+		final String createdBy = "System";		
+
 		String msg = null;
 		if (entityId != null && StringUtils.isNotBlank(entityName) && StringUtils.isNotBlank(entityField)) {
-			systemFileService.storeFile(file, entityId, entityName, entityField);
+			systemFileService.storeFile(file, entityId, entityName, entityField, createdBy);
 			msg = "You successfully uploaded " + file.getOriginalFilename() + "!";
 		} else {
 			msg = "Unable to upload " + file.getOriginalFilename() + "!";

@@ -3,10 +3,10 @@ package id.alinea.dms.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import id.alinea.dms.service.IRepositoryLocator;
 import id.alinea.dms.service.IServiceLocator;
 import id.alinea.dms.service.IStorageService;
-import id.alinea.dms.service.ISystemFileService;
+import id.alinea.dms.service.IDbSystemFileService;
+import id.alinea.dms.service.IImageKitService;
 
 @Service
 public class ServiceLocator extends BaseService implements IServiceLocator {
@@ -15,7 +15,10 @@ public class ServiceLocator extends BaseService implements IServiceLocator {
     private IStorageService storageService;
 
     @Autowired
-    private ISystemFileService systemFileService;
+    private IDbSystemFileService systemFileService;
+
+    @Autowired
+    private IImageKitService imageKitService;
 
     @Override
     public IStorageService getStorageService() {
@@ -23,7 +26,12 @@ public class ServiceLocator extends BaseService implements IServiceLocator {
     }
 
     @Override
-    public ISystemFileService getSystemFileService() {
+    public IDbSystemFileService getSystemFileService() {
         return systemFileService;
+    }
+
+    @Override
+    public IImageKitService getImageKitService() {
+        return imageKitService;
     } 
 }
